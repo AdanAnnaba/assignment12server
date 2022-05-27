@@ -34,9 +34,10 @@ async function run(){
 
         app.get('/booking',async(req,res)=>{
             const purchaseproduct = req.query.email;
-            const query = {email:purchaseproduct};
+            const query = {booking:purchaseproduct};
             const booking = await usersbooking.find(query).toArray();
             res.send(booking);
+            console.log(booking);
         })
 
 
