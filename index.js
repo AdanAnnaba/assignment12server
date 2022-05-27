@@ -19,6 +19,7 @@ async function run(){
     try{
         await client.connect();
         const dbcollections = client.db('manufacturer').collection('products');
+        const usercollections = client.db('manufacturer').collection('user');
 
         app.get('/product',async(req,res)=>{
             const query = {}
@@ -46,16 +47,16 @@ async function run(){
             const result =await dbcollections.deleteOne(query);
             res.send(result);
         })
-        app.put('/product/:id',async(req,res)=>{
-            const id = req.params.id;
-            const qty = req.body;
-            const filter = {_id: ObjectId(id)};
+        app.put('/user/:email',async(req,res)=>{
+            const email = req.params.email;
+            const user = req.body;
+            const filter = {email:email};
             const options = { upsert: true };
             const updatedDoc = {
-                $set: qty
+                $set: user,
                     
             };
-            const result =await dbcollections.updateOne(filter, updatedDoc, options);
+            const result =await usercollections.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
     }
