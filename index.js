@@ -16,11 +16,14 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.l32d5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+
+
 async function run(){
     try{
         await client.connect();
         const dbcollections = client.db('manufacturer').collection('products');
         const usercollections = client.db('manufacturer').collection('user');
+        const usersbooking = client.db('manufacturer').collection('booking');
 
         app.get('/product',async(req,res)=>{
             const query = {}
@@ -29,17 +32,28 @@ async function run(){
             res.send(product);
         })
 
-        app.get('/product/:id',async(req,res)=>{
-            const id =req.params.id;
-            const query = {_id: ObjectId(id)};
-            const result = await dbcollections.findOne(query);
-            res.send(result);
+        app.get('/booking',async(req,res)=>{
+            const purchaseproduct = req.query.email;
+            const query = {email:purchaseproduct};
+            const booking = await usersbooking.find(query).toArray();
+            res.send(booking);
         })
+
 
         app.post('/product',async(req,res)=>{
             const addproduct = req.body;
             const result = await dbcollections.insertOne(addproduct);
             res.send(result)
+        })
+        app.post('/booking',async(req,res)=>{
+            const booking = req.body;
+            const query = {email: booking.email }
+            const exists = await usersbooking.findOne(query);
+            if(exists){
+                return res.send({success: false, productName:exists })
+            }
+            const result = await usersbooking.insertOne(booking);
+            return res.send({success: true, result})
         })
 
         app.delete('/product/:id',async(req,res)=>{
