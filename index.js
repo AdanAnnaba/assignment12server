@@ -57,12 +57,7 @@ async function run(){
             return res.send({success: true, result})
         })
 
-        app.delete('/product/:id',async(req,res)=>{
-            const id = req.params.id;
-            const query = {_id: ObjectId(id)};
-            const result =await dbcollections.deleteOne(query);
-            res.send(result);
-        })
+   
         app.put('/user/:email',async(req,res)=>{
             const email = req.params.email;
             const user = req.body;
@@ -73,7 +68,7 @@ async function run(){
                     
             };
             const result =await usercollections.updateOne(filter, updatedDoc, options);
-            const token = jwt.sign({email:'email'},process.env.ACCESS_TOKEN_SECRET,{expiresIn:'1h'});
+            const token = jwt.sign({email:'email'},process.env.ACCESS_TOKEN_SECRET,{expiresIn:'5000h'});
             res.send({result, token});
         })
     }
