@@ -23,7 +23,7 @@ function verifyJWT(req,res,next){
         return res.status(401).send({message: 'Unauthorized access'})
     }
     const token = authHeader.split(' ')[1];
-    jwt.verify(token.process.env.ACCESS_TOKEN_SECRET, function(err,decoded){
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function(err,decoded){
         if(err){
             return res.status(403).send({message: 'forbidden access'})
         }
@@ -60,14 +60,6 @@ async function run(){
         })
 
 
-        app.get('/users',async(req,res)=>{
-            const query = req.body;
-            const cursor =  usercollections.find(query);
-            const users = await cursor.toArray();
-            res.send(users);
-        })
-
-
         app.post('/product',async(req,res)=>{
             const addproduct = req.body;
             const result = await dbcollections.insertOne(addproduct);
@@ -75,7 +67,7 @@ async function run(){
         })
         app.post('/booking',async(req,res)=>{
             const booking = req.body;
-            const query = {email: booking.email }
+            const query = {productName: booking.productName, email: booking.email }
             const exists = await usersbooking.findOne(query);
             if(exists){
                 return res.send({success: false, productName:exists })
@@ -95,10 +87,9 @@ async function run(){
                     
             };
             const result =await usercollections.updateOne(filter, updatedDoc, options);
-            const token = jwt.sign({email:email}.process.env.ACCESS_TOKEN_SECRET,{expiresIn:'5000h'});
-            res.send({result, token});
+            const token = jwt.sign({email:email}, process.env.ACCESS_TOKEN_SECRET,{expiresIn:'5000h'});
+            res.send({result,token});
         })
-
     }
     finally{
 
