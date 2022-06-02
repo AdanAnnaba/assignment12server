@@ -91,6 +91,17 @@ async function run(){
                 res.send(product);
             });
 
+            app.get('/admin/:email', async(req,res)=>{
+                const email = req.params.email;
+                const user = await usercollections.find({email:email});
+                const isAdmin = user.role === 'admin'
+                res.send({admin: isAdmin})
+
+            })
+
+
+
+
             app.put('/user/admin/:email', verifyJWT, async(req,res)=>{
                 const email = req.params.email;
                 const adminCreator =  req.decoded.email;
