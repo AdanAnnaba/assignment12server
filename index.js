@@ -91,17 +91,23 @@ async function run(){
                 res.send(product);
             });
 
-            app.put('/user/admin/:email', async(req,res)=>{
+            app.put('/user/admin/:email', verifyJWT, async(req,res)=>{
                 const email = req.params.email;
-               
-                const filter = {email:email};
-                
+                const adminCreator =  req.decoded.email;
+                const realAdmin = await usercollections.findOne({email: adminCreator});
+                if(realAdmin.role === 'admin'){
+                    const filter = {email:email};
                 const updatedDoc = {
-                    $set:{role: 'admin'},
-                        
+                    $set:{role: 'admin'}, 
                 };
-                const result =await usercollections.updateOne(filter, updatedDoc);
+                const result = await usercollections.updateOne(filter, updatedDoc);
                 res.send(result);
+
+                }
+                else{
+                    res.status(403).send({message: 'forbidden'})
+                }
+                
             })
 
 
