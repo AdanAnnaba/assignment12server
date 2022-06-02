@@ -77,7 +77,7 @@ async function run(){
             return res.send({success: true, result})
         })
 
-        app.delete('/booking/:id',verifyJWT, async(req,res)=>{
+        app.delete('/booking/:id',async(req,res)=>{
                 const id = req.params.id;
                 const query = {_id: ObjectId(id)};
                 const result =await usersbooking.deleteOne(query);
@@ -89,21 +89,7 @@ async function run(){
                 const cursor =  usercollections.find(query);
                 const product = await cursor.toArray();
                 res.send(product);
-            });
-
-            app.put('/user/:admin:email',async(req,res)=>{
-                const email = req.params.email;
-                
-                const filter = {email:email};
-                const updatedDoc = {
-                    $set: {role: 'admin'},
-                        
-                };
-                const result =await usercollections.updateOne(filter, updatedDoc);
-                res.send(result);
             })
-
-
 
 
         app.put('/user/:email',async(req,res)=>{
