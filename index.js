@@ -93,8 +93,8 @@ async function run(){
 
             app.get('/admin/:email', async(req,res)=>{
                 const email = req.params.email;
-                const user = await usercollections.find({email:email});
-                const isAdmin = user.role === 'admin'
+                const user = await usercollections.findOne({email:email});
+                const isAdmin = user.role === 'admin';
                 res.send({admin: isAdmin})
 
             })
