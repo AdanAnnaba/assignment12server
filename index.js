@@ -99,8 +99,6 @@ async function run(){
             })
 
 
-
-
             app.put('/user/admin/:email', verifyJWT, async(req,res)=>{
                 const email = req.params.email;
                 const adminCreator =  req.decoded.email;
@@ -145,3 +143,6 @@ run().catch(console.dir)
 app.listen(port,()=>{
     console.log('Server is working');
 })
+
+
+123
